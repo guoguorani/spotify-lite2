@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Songs List</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        /* height: 100vh; */
+      }
+
+      table {
+        border-collapse: collapse;
+        margin: 2rem auto;
+      }
+
+      th,
+      td {
+        padding: 0.5rem;
+        border: 1px solid black;
+      }
+
+      th {
+        background-color: lightgray;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      button {
+        margin-top: 2rem;
+        padding: 0.5rem 1rem;
+        background-color: blue;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      input {
+        margin: 0 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Liked Songs List</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Album</th>
+          </tr>
+        </thead>
+        <tbody id="songs-table-body"></tbody>
+      </table>
+    </div>
+    <div>
+      <h1>Followed Artist List</h1>
+      <ul id="artists-list"></ul>
+    </div>
+    <button id="user-profile">User Info</button>
+    <button id="logout-btn">Log Out</button>
+    <script src="../utils/users.js"></script>
+  </body>
+</html>
