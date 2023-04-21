@@ -1,0 +1,18 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+.username-input {
+  margin: 1rem;
+}
+
+.password-input {
+  margin: 1rem;
+}
+
+label {
+  margin: 5px;
+}
