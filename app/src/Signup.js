@@ -1,11 +1,23 @@
+// import statements separated by semicolon
 import React, { useState } from "react";
+// import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { signUpRequest, signUpSuccess, signUpFailure } from "./redux/reducer/userReducer";
 import "./Signup.css";
 
-function Signup() {
+export default function Signup() {
+  // const history = useHistory();
+  // console.log(history);
+  const dispatch = useDispatch();
+
+  const { isSigningUp } = useSelector((state) => state.signup);
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [registrationType, setRegistrationType] = useState("regular");
+
+  const [signupError, setSignupError] = useState(null);
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -23,13 +35,39 @@ function Signup() {
     setRegistrationType(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Call signup API with username, email, password, and registrationType
-    console.log("Username: ", username);
-    console.log("Email: ", email);
-    console.log("Password: ", password);
-    console.log("Registration Type: ", registrationType);
+    dispatch(signUpRequest());
+    try {
+      // Call signup API with username, email, password, and registrationType
+      const token = localStorage.getItem("token");
+      const response = await fetch("<signup-api-url>", {
+        method: "POST",
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          registrationType,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("token", data.token);
+        dispatch(signUpSuccess());
+        // history.push("/login"); // redirect to login page after successful signup
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      setSignupError(error.message);
+      dispatch(signUpFailure(error.message));
+    }
   };
 
   return (
@@ -88,10 +126,16 @@ function Signup() {
             <label htmlFor="artist">Artist</label>
           </div>
         </div>
-        <button type="submit">Sign up</button>
+        <button type="submit" disabled={isSigningUp}>
+          {isSigningUp ? "Signing up..." : "Sign up"}
+        </button>
       </form>
+      {signUpSuccess && (
+        <p>
+          Sign up successful! Please check your email to verify your account.
+        </p>
+      )}
+      {signupError && <p>Error: {signupError}</p>}
     </div>
   );
 }
-
-export default Signup;

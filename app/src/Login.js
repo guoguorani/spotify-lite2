@@ -1,51 +1,57 @@
-import React, { useState } from "react";
-import './Login.css';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { loginUser } from './redux/reducer/userReducer';
+// import axios from 'axios';
 
-function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
+  const dispatch = useDispatch();
+  const { isLoggingIn, loginError, isAuthenticated } = useSelector(
+    (state) => state.user
+  );
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Call login API with username and password
-    console.log("Username: ", username);
-    console.log("Password: ", password);
+    dispatch(loginUser(email, password));
   };
 
+  if (isAuthenticated) {
+    // Redirect user to home page if authenticated
+    return <Link to="/" />;
+  }
+
   return (
-    <div className = 'login-container'>
-      <h1>Log In</h1>
+    <div>
+      <h2>Login</h2>
       <form onSubmit={handleSubmit}>
-        <div className = 'username-input'>
-          <label htmlFor="username">Username:</label>
+        <div>
+          <label>Email:</label>
           <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={handleUsernameChange}
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
           />
         </div>
-        <div className = 'password-input'>
-          <label htmlFor="password">Password:</label>
+        <div>
+          <label>Password:</label>
           <input
             type="password"
-            id="password"
             value={password}
-            onChange={handlePasswordChange}
+            onChange={(event) => setPassword(event.target.value)}
+            required
           />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" disabled={isLoggingIn}>
+          {isLoggingIn ? 'Logging in...' : 'Login'}
+        </button>
       </form>
+      {loginError && <div className="error">{loginError}</div>}
     </div>
   );
-}
+};
 
 export default Login;
