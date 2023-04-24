@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { signupUser } from '../redux/user/userReducer';
+import { signupUser } from '../redux/user/userActionCreators';
 
 const SignupPage = () => {
   const dispatch = useDispatch();

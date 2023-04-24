@@ -1,63 +1,84 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateUserProfile, followArtist, likeSong } from '../redux/user/userReducer';
+// ./page/UserPage.js
 
-const UserPage = ({ userId }) => {
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch, useStore } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import {
+  likeSong,
+  followArtist,
+  fetchSongs,
+  fetchArtists,
+} from '../redux/user/userActionCreators';
+import { getUser, getAllSongs, getAllArtists } from '../redux/user/userSelectors';
+
+const UserPage = () => {
+
+  const store = useStore();
+  console.log(store.getState());
 
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user.user);
+  const navigate = useNavigate();
 
-  const [newEmail, setNewEmail] = useState(user ? user.email : '');
-  const [newPassword, setNewPassword] = useState('');
+  const user = useSelector(getUser);
+  const allSongs = useSelector(getAllSongs);
+  const allArtists = useSelector(getAllArtists);
+  const [loading, setLoading] = useState(true);
 
-  if (!user || user.role !== 'user' || user.id !== userId) {
-    return <div>Access denied</div>;
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchSongs());
+      await dispatch(fetchArtists());
+      setLoading(false);
+    };
+  
+    fetchData();
+  }, [dispatch]);
 
-  const handleProfileUpdate = (e) => {
-    e.preventDefault();
-    dispatch(updateUserProfile(userId, { email: newEmail, password: newPassword }));
+  const handleLikeSong = (songId) => {
+    dispatch(likeSong(user.user.id, songId));
   };
 
   const handleFollowArtist = (artistId) => {
-    dispatch(followArtist(userId, artistId));
+    console.log('id',user.user.user.id)
+    dispatch(followArtist(user.user.user.id, artistId));
   };
 
-  const handleLikeSong = (songId) => {
-    dispatch(likeSong(userId, songId));
+  const handleSubmit = event => {
+    event.preventDefault();
+    navigate(`/usersprofile/${user.id}`);
   };
-
+  
   return (
     <div>
-      <h1>User Page</h1>
-      <p>Follow artists here</p>
-      <p>Like a new song here</p>
-      <p>Update your profile information here</p>
-      <h2>Update Profile</h2>
-      <form onSubmit={handleProfileUpdate}>
-        <div>
-          <label htmlFor="newEmail">Email:</label>
-          <input
-            type="email"
-            id="newEmail"
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="newPassword">New Password:</label>
-          <input
-            type="password"
-            id="newPassword"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit">Update Profile</button>
-      </form>
+      {loading ? (
+        <h2>Loading...</h2>
+      ) : (
+        <>
+          <h1>Welcome, {user.name}!</h1>
+          <h2>All Artists:</h2>
+          {allArtists &&
+              allArtists.map((user) => (
+                <div key={user.id}>
+                  <h3>{user.name}</h3>
+                  <button onClick={() => handleFollowArtist(user.id)}>Follow</button>
+                </div>
+              ))
+          }
+          <h2>All Songs:</h2>
+          {allSongs &&
+              allSongs.map((song) => (
+                <div key={song.id}>
+                  <h3>{song.title}</h3>
+                  <button onClick={() => handleLikeSong(song.id)}>Like</button>
+                </div>
+              ))
+          }
+          <button type="submit" onClick={handleSubmit}>Profiles</button>
+        </>
+      )}
     </div>
   );
 };
 
 export default UserPage;
-

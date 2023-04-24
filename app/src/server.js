@@ -91,7 +91,6 @@ const addSong = (title, url, artistId) => {
   return song;
 };
 
-
 const getSongById = (id) => songs.find((song) => song.id === id);
 
 const getSongsByArtist = (artistId) => songs.filter((song) => song.artist === artistId);
@@ -228,7 +227,7 @@ app.get('/api/users', (req, res) => {
   res.json({ users });
 });
 
-// - Users are limited to the following functionality: follow the artists
+// Users are limited to the following functionality: follow the artists
 app.post('/api/follow/artists/:artistId', authenticateJWT, (req, res) => {
   const { artistId } = req.params;
   const userId = req.user.id;
@@ -258,7 +257,7 @@ app.get('/api/follow/artists', authenticateJWT, (req, res) => {
     return res.status(404).json({ message: 'User not found' });
   }
   const followedArtists = user.following.map((artistId) => getUserById(artistId));
-  res.json({ followedArtists });
+  res.json(followedArtists);
 });
 
 // Users's liked songs
@@ -347,3 +346,80 @@ app.delete('/api/artists/songs/:id', authenticateJWT, (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+
+// 
+// // Function to check if a user is an artist
+// const isArtist = (user) => user.role === 'artist';
+
+// // Middleware to check if a user is an artist
+// const checkArtistRole = (req, res, next) => {
+//   const user = req.user;
+//   if (!isArtist(user)) {
+//     return res.status(403).json({ message: 'You must be an artist to access this resource' });
+//   }
+//   next();
+// };
+
+// // Middleware to check if a user is not an artist
+// const checkNotArtistRole = (req, res, next) => {
+//   const user = req.user;
+//   if (isArtist(user)) {
+//     return res.status(403).json({ message: 'You cannot access this resource as an artist' });
+//   }
+//   next();
+// };
+
+// // Update the endpoints with the role checks
+
+// // Users are limited to the following functionality: follow the artists
+// app.post('/api/follow/artists/:artistId', authenticateJWT, checkNotArtistRole, (req, res) => {
+//   // ...
+// });
+
+// // Users are limited to the following functionality: like a song
+// app.post('/api/like/songs/:songId', authenticateJWT, checkNotArtistRole, (req, res) => {
+//   // ...
+// });
+
+// // Users's following for artists
+// app.get('/api/follow/artists', authenticateJWT, checkNotArtistRole, (req, res) => {
+//   // ...
+// });
+
+// // Users's liked songs
+// app.get('/api/like/songs', authenticateJWT, checkNotArtistRole, (req, res) => {
+//   // ...
+// });
+
+// // Users are limited to the following functionality: update their profile information
+// app.put('/api/users/:id', authenticateJWT, checkNotArtistRole, async (req, res) => {
+//   // ...
+// });
+
+// // Artists are limited to the following functionality: view their list of followers
+// app.get('/api/artists/:artistId/followers', authenticateJWT, checkArtistRole, (req, res) => {
+//   const { artistId } = req.params;
+//   const artist = getUserById(artistId);
+//   if (!artist) {
+//     return res.status(404).json({ message: 'Artist not found' });
+//   }
+//   res.json({ followers: artist.followers.map((userId) => getUserById(userId)) });
+// });
+
+// // Artists are limited to the following functionality: upload new songs, edit and delete their existing songs. they cannot like songs, follow other artists, or view/edit their own profile.
+// app.post('/api/artists/songs', authenticateJWT, checkArtistRole, (req, res) => {
+//   // ...
+// });
+
+// app.put('/api/artists/songs/:id', authenticateJWT, checkArtistRole, (req, res) => {
+//   // ...
+// });
+
+// app.delete('/api/artists/songs/:id', authenticateJWT, checkArtistRole, (req, res) => {
+//   // ...
+// });
+
+// app.listen(PORT, () => {
+//   console.log(`Server listening on port ${PORT}`);
+// });

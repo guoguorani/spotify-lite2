@@ -22,6 +22,7 @@ import ProfilePage from './pages/ProfilePage';
 import ArtistPage from './pages/ArtistPage';
 import UserPage from './pages/UserPage';
 import NotFoundPage from './pages/NotFoundPage';
+import UserProfilePage from './pages/UserProfilePage'
 
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);
@@ -35,6 +36,7 @@ root.render(
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile/:id" element={<ProfilePage />} />
+          <Route path="/usersprofile/:id" element={<UserProfilePage />} />
           <Route path="/artists/:id" element={<ArtistPage />} />
           <Route path="/users/:id" element={<UserPage />} />
       <Route element={<NotFoundPage />} />
