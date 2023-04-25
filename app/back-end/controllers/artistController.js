@@ -6,7 +6,6 @@ const { songs } = require('../model.js');
 const cors = require('cors');
 
 const app = express();
-// const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
@@ -20,13 +19,14 @@ function getSongs(req, res) {
 // edit and delete their existing songs. they cannot like songs, follow other artists, or view/edit their own profile.
 
 function getSongsByArtistRoute(req, res) {
-    const { artistId } = req.params;
+    const artistId = req.user.id;
     const artistSongs = getSongsByArtist(artistId);
     res.json({ songs: artistSongs });
 };
 
 
-// - Artists are limited to the following functionality: upload new songs, edit and delete their existing songs. they cannot like songs, follow other artists, or view/edit their own profile.
+// - Artists are limited to the following functionality: upload new songs, edit and delete their existing songs. 
+// they cannot like songs, follow other artists, or view/edit their own profile.
 function uploadSong(req, res) {
     const { title, url } = req.body;
     const artistId = req.user.id;

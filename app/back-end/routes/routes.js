@@ -17,9 +17,9 @@ router.put('/users', userController.authenticateJWT, userController.updateUserPr
 
 // Artist routes
 router.get('/songs', artistController.getSongs);
-router.get('/artists/:artistId/songs', artistController.getSongsByArtistRoute);
-router.post('/artists/songs', userController.authenticateJWT, artistController.uploadSong);
-router.put('/artists/songs/:id', userController.authenticateJWT, artistController.editSong);
-router.delete('/artists/songs/:id', userController.authenticateJWT, artistController.deleteSongRoute);
+router.get('/artists/songs', userController.authenticateJWT, artistController.getSongsByArtistRoute);
+router.post('/artists/songs/upload', userController.authenticateJWT, artistController.uploadSong);
+router.put('/artists/songs/edit/:id', userController.authenticateJWT, artistController.editSong);
+router.delete('/artists/songs/delete/:id', userController.authenticateJWT, artistController.deleteSongRoute);
 
 module.exports = router;
