@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   fetchCreatedSongs,
   addSong,
@@ -12,6 +13,7 @@ import "./styles.css";
 
 const ArtistPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   // const state = useSelector((state) => state);
   const createdSongs = useSelector((state) => state.artist.createdSongs.songs);
 
@@ -52,6 +54,11 @@ const ArtistPage = () => {
     dispatch(fetchCreatedSongs());
   };
 
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/signup");
+  };
+
   // const checkInfo = () => {
   //   console.log(createdSongs, state);
   // };
@@ -88,6 +95,7 @@ const ArtistPage = () => {
             </label>
             <button type="submit">Add Song</button>
           </form>
+          <button onClick={handleLogout}>Logout</button>
         </>
       )}
     </div>

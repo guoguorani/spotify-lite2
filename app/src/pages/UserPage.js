@@ -19,9 +19,6 @@ import {
 } from "../redux/user/userSelectors";
 
 const UserPage = () => {
-  // const store = useStore();
-  // console.log(store.getState());
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -29,7 +26,6 @@ const UserPage = () => {
   const allSongs = useSelector(getAllSongs) || [];
   const allArtists = useSelector(getAllArtists) || [];
   const [loading, setLoading] = useState(true);
-  // const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
   const [likedSongIds, setLikedSongIds] = useState([]);
   const [followedArtistIds, setFollowedArtistIds] = useState([]);
@@ -47,15 +43,13 @@ const UserPage = () => {
     fetchData();
   }, [dispatch, currentSongPage, currentArtistPage]);
 
-  const handleLikeSong = (songId) => {
-    dispatch(likeSong(user.user.id, songId));
-    setLikedSongIds([...likedSongIds, songId]);
-  };
-
-  const handleFollowArtist = (artistId) => {
-    console.log("id", user.user.user.id);
-    dispatch(followArtist(user.user.user.id, artistId));
-    setFollowedArtistIds([...followedArtistIds, artistId]);
+  const handleAction = (actionType, id, updateStateFunction) => {
+    if (actionType === "likeSong") {
+      dispatch(likeSong(user.user.id, id));
+    } else if (actionType === "followArtist") {
+      dispatch(followArtist(user.user.user.id, id));
+    }
+    updateStateFunction((prevIds) => [...prevIds, id]);
   };
 
   const handleSubmit = (event) => {
@@ -101,20 +95,20 @@ const UserPage = () => {
           <div className="user_content">
             <h2>All Artists:</h2>
             <div className="artists_section">
-              {displayedArtists().map((user) => (
-                <div className="artists_cell" key={user.id}>
-                  <h3>{user.name}</h3>
-                  <button
-                    onClick={() => handleFollowArtist(user.id)}
-                    className={
-                      followedArtistIds.includes(user.id) ? "clicked" : ""
-                    }
-                  >
-                    Follow
-                  </button>
-                </div>
-              ))}
-            </div>
+            {displayedArtists().map((user) => (
+              <div className="artists_cell" key={user.id}>
+                <h3>{user.name}</h3>
+                <button
+                  onClick={() => handleAction("followArtist", user.id, setFollowedArtistIds)}
+                  className={
+                    followedArtistIds.includes(user.id) ? "clicked" : ""
+                  }
+                >
+                  Follow
+                </button>
+              </div>
+            ))}
+          </div>
             <div className="pagination">
               <button
                 onClick={() => handleArtistPageChange(-1)}
@@ -132,18 +126,18 @@ const UserPage = () => {
             </div>
             <h2>All Songs:</h2>
             <div className="songs_section">
-              {displayedSongs().map((song) => (
-                <div className="songs_cell" key={song.id}>
-                  <h3>{song.title}</h3>
-                  <button
-                    onClick={() => handleLikeSong(song.id)}
-                    className={likedSongIds.includes(song.id) ? "clicked" : ""}
-                  >
-                    Like
-                  </button>{" "}
-                </div>
-              ))}
-            </div>
+            {displayedSongs().map((song) => (
+              <div className="songs_cell" key={song.id}>
+                <h3>{song.title}</h3>
+                <button
+                  onClick={() => handleAction("likeSong", song.id, setLikedSongIds)}
+                  className={likedSongIds.includes(song.id) ? "clicked" : ""}
+                >
+                  Like
+                </button>{" "}
+              </div>
+            ))}
+          </div>
           </div>
           <div className="pagination">
             <button
