@@ -60,7 +60,7 @@ const UserPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    navigate(`/usersprofile/${user.id}`);
+    navigate(`/usersprofile/${user.user.user.id}`);
   };
 
   const handleArtistPageChange = (direction) => {
@@ -97,7 +97,7 @@ const UserPage = () => {
         <h2>Loading...</h2>
       ) : (
         <>
-          <h1>Welcome, {user.name}!</h1>
+          <h1>Welcome, {user.user.user.name}!</h1>
           <div className="user_content">
             <h2>All Artists:</h2>
             <div className="artists_section">

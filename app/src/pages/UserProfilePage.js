@@ -21,12 +21,10 @@ const UserProfilePage = () => {
   const user = useSelector(getUser);
   const likedSongs = useSelector(getLikedSongs);
   const followedArtists = useSelector(getFollowedArtists);
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
+  const [name, setName] = useState(user?.user?.user?.name || "");
+  const [email, setEmail] = useState(user?.user?.user?.email || "");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
-
-  console.log(user, id);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,7 +54,51 @@ const UserProfilePage = () => {
       email,
       password,
     };
-    dispatch(updateProfile(userData));
+    dispatch(updateProfile(id, userData))
+      .then(() => {
+        // Update the state with the new user data
+        setName(user?.user?.user?.name || "");
+        setEmail(user?.user?.user?.email || "");
+        setPassword("");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Failed to update profile. Please try again later.");
+      });
+  };
+  
+  // const handleUpdateUser = () => {
+  //   const userData = {
+  //     name,
+  //     email,
+  //     password,
+  //   };
+  //   console.log(userData)
+  //   dispatch(updateProfile(id, userData))
+  //     .then(() => {
+  //       // Update the state with the new user data
+  //       setName(userData.name);
+  //       setEmail(userData.email);
+  //       setPassword(userData.password);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       alert("Failed to update profile. Please try again later.");
+  //     });
+  // };
+  
+
+  const checkInfo = () => {
+    console.log(
+      "likedSongs: ",
+      likedSongs,
+      "followedArtists: ",
+      followedArtists,
+      "user: ",
+      user,
+      "id: ",
+      id
+    );
   };
 
   return (
@@ -65,21 +107,28 @@ const UserProfilePage = () => {
         <h2>Loading...</h2>
       ) : (
         <>
-          <h1>Welcome, {user.name}!</h1>
+          <button onClick={checkInfo}>Check</button>
+          <h1>Welcome, {user?.user?.user?.name}!</h1>
           <h2>Your Liked Songs:</h2>
-          {likedSongs &&
+          {likedSongs && likedSongs.length > 0 ? (
             likedSongs.map((song) => (
               <div key={song.id}>
                 <h3>{song.title}</h3>
               </div>
-            ))}
+            ))
+          ) : (
+            <p>No liked songs found</p>
+          )}
           <h2>Your Followed Artists:</h2>
-          {followedArtists &&
+          {followedArtists && followedArtists.length > 0 ? (
             followedArtists.map((artist) => (
               <div key={artist.id}>
                 <h3>{artist.name}</h3>
               </div>
-            ))}
+            ))
+          ) : (
+            <p>No followed artists found</p>
+          )}
           <h2>Update Profile:</h2>
           <label>Name: </label>
           <input type="text" value={name} onChange={handleNameChange} />

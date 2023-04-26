@@ -142,17 +142,15 @@ export const updateProfileFailure = (error) => ({
   payload: error,
 });
 
-// Update the updateProfile action creator
 export const updateProfile = (userId, updatedInfo) => async (dispatch) => {
   dispatch(updateProfileRequest());
   try {
+    // Get the current user data
     const response = await fetch(`http://localhost:3001/api/users/${userId}`, {
-      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
-      body: JSON.stringify(updatedInfo),
     });
 
     if (!response.ok) {
@@ -160,12 +158,37 @@ export const updateProfile = (userId, updatedInfo) => async (dispatch) => {
       throw new Error(error.message);
     }
 
-    const updatedUser = { ...updatedInfo, id: userId };
+    const user = await response.json();
+
+    // Update the user data with the updated fields
+    const updatedUser = {
+      id: userId,
+      name: updatedInfo.name || user.name,
+      email: updatedInfo.email || user.email,
+      password: updatedInfo.password || user.password,
+    };
+
+    // Call the API to update the user data
+    const updateResponse = await fetch(`http://localhost:3001/api/users`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(updatedUser),
+    });
+
+    if (!updateResponse.ok) {
+      const error = await updateResponse.json();
+      throw new Error(error.message);
+    }
+
     dispatch(updateProfileSuccess(updatedUser));
   } catch (error) {
     dispatch(updateProfileFailure({ error: error.message }));
   }
 };
+
 
 // Like song action creators
 export const likeSongRequest = () => ({

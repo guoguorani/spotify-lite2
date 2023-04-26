@@ -9,5 +9,5 @@ export const getUser = (state) => state.user;
 
 export const getAllSongs = (state) => state.user.Songs;
 export const getAllArtists = (state) => state.user.Artists;
-export const getLikedSongs = (state) => state.user.likedSongs;
+export const getLikedSongs = (state) => state.user.likedSongs.likedSongs;
 export const getFollowedArtists = (state) => state.user.followedArtists;

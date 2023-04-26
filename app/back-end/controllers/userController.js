@@ -118,6 +118,7 @@ function updateUserProfile(req, res) {
   res.json({ message: "User updated successfully" });
 }
 
+
 module.exports = {
   register,
   login,
