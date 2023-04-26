@@ -38,14 +38,19 @@ button {
   margin: 10px;
 }
 
-.user_content {
-  /* display: flex;
+/* .user_content { */
+/* display: flex;
   justify-content: space-around; */
-}
+/* } */
 
 .artists_section,
 .songs_section {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
   /* width: 45%; */
+}
+
+.artists_cell,
+.songs_cell {
+  margin: 10px;
 }

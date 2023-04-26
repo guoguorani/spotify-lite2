@@ -60,6 +60,26 @@ const UserPage = () => {
     setCurrentPage((prevPage) => prevPage + direction);
   };
 
+  const totalPages = () => {
+    const maxCount = Math.max(
+      allSongs ? allSongs.length : 0,
+      allArtists ? allArtists.length : 0
+    );
+    return Math.ceil(maxCount / itemsPerPage);
+  };
+
+  const displayedArtists = () => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return allArtists.slice(startIndex, endIndex);
+  };
+
+  const displayedSongs = () => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return allSongs.slice(startIndex, endIndex);
+  };
+
   return (
     <div className="userpage_container">
       {loading ? (
@@ -70,32 +90,25 @@ const UserPage = () => {
           <div className="user_content">
             <h2>All Artists:</h2>
             <div className="artists_section">
-              {allArtists &&
-                allArtists.map((user) => (
-                  <div key={user.id}>
-                    <h3>{user.name}</h3>
-                    <button onClick={() => handleFollowArtist(user.id)}>
-                      Follow
-                    </button>
-                  </div>
-                ))}
+              {displayedArtists().map((user) => (
+                <div className="artists_cell" key={user.id}>
+                  <h3>{user.name}</h3>
+                  <button onClick={() => handleFollowArtist(user.id)}>
+                    Follow
+                  </button>
+                </div>
+              ))}
             </div>
             <h2>All Songs:</h2>
             <div className="songs_section">
-              {allSongs &&
-                allSongs.map((song) => (
-                  <div key={song.id}>
-                    <h3>{song.title}</h3>
-                    <button onClick={() => handleLikeSong(song.id)}>
-                      Like
-                    </button>
-                  </div>
-                ))}
+              {displayedSongs().map((song) => (
+                <div className="songs_cell" key={song.id}>
+                  <h3>{song.title}</h3>
+                  <button onClick={() => handleLikeSong(song.id)}>Like</button>
+                </div>
+              ))}
             </div>
           </div>
-          <button type="submit" onClick={handleSubmit}>
-            Profiles
-          </button>
           <div className="pagination">
             <button
               onClick={() => handlePageChange(-1)}
@@ -104,8 +117,16 @@ const UserPage = () => {
               Previous
             </button>
             <span>Page {currentPage}</span>
-            <button onClick={() => handlePageChange(1)}>Next</button>
+            <button
+              onClick={() => handlePageChange(1)}
+              disabled={currentPage === totalPages()}
+            >
+              Next
+            </button>
           </div>
+          <button type="submit" onClick={handleSubmit}>
+            Profiles
+          </button>
         </>
       )}
     </div>
