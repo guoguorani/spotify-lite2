@@ -1,90 +1,97 @@
 // ./pages/ArtistPage.js
 
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchFollowing,
   fetchCreatedSongs,
   addSong,
-  updateSong,
-} from './redux/artist/artistActionCreators';
+  editSong,
+  deleteSong,
+} from "../redux/artist/artistActionCreators";
+import "./styles.css";
 
 const ArtistPage = () => {
   const dispatch = useDispatch();
-  const following = useSelector((state) => state.artist.following);
-  const createdSongs = useSelector((state) => state.artist.createdSongs);
-  const token = 'your_token_here'; // Replace with the actual token
+  // const state = useSelector((state) => state);
+  const createdSongs = useSelector((state) => state.artist.createdSongs.songs);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(fetchFollowing(token));
-    dispatch(fetchCreatedSongs(token));
-  }, [dispatch, token]);
+    const fetchData = async () => {
+      setIsLoading(true);
+      await dispatch(fetchCreatedSongs());
+      setIsLoading(false);
+    };
 
-  const handleAddSong = (event) => {
+    fetchData();
+  }, [dispatch]);
+
+  const handleAddSong = async (event) => {
     event.preventDefault();
     const songData = {
       title: event.target.title.value,
-      artist: event.target.artist.value,
-      // ... other fields
+      url: event.target.url.value,
     };
-    dispatch(addSong(songData, token));
+    console.log(songData);
+    await dispatch(addSong(songData));
+    dispatch(fetchCreatedSongs());
   };
 
-  const handleUpdateSong = (event, id) => {
-    event.preventDefault();
-    const updatedSongData = {
-      title: event.target.title.value,
-      artist: event.target.artist.value,
-      // ... other fields
+  const handleUpdateSong = async (id) => {
+    const songData = {
+      title: prompt("Enter the updated song title:"),
+      url: prompt("Enter the updated song URL:"),
     };
-    dispatch(updateSong(updatedSongData, id, token));
+    await dispatch(editSong(songData, id));
+    dispatch(fetchCreatedSongs());
   };
+
+  const handleDeleteSong = async (id) => {
+    await dispatch(deleteSong(id));
+    dispatch(fetchCreatedSongs());
+  };
+
+  // const checkInfo = () => {
+  //   console.log(createdSongs, state);
+  // };
 
   return (
-    <div>
+    <div className="artistpage_container">
+      {/* <button onClick={checkInfo}>Check</button> */}
       <h1>Artist Dashboard</h1>
-      <h2>Following</h2>
-      <ul>
-        {following.map((user) => (
-          <li key={user.id}>{user.name}</li>
-        ))}
-      </ul>
-      <h2>Created Songs</h2>
-      <ul>
-        {createdSongs.map((song) => (
-          <li key={song.id}>{song.title}</li>
-        ))}
-      </ul>
-      <h2>Add Song</h2>
-      <form onSubmit={handleAddSong}>
-        <label>
-          Title:
-          <input type="text" name="title" />
-        </label>
-        <label>
-          Artist:
-          <input type="text" name="artist" />
-        </label>
-        {/* Add other fields as needed */}
-        <button type="submit">Add Song</button>
-      </form>
-      <h2>Update Song</h2>
-      {/* Replace 'song_id' with the actual ID of the song you want to update */}
-      <form onSubmit={(event) => handleUpdateSong(event, 'song_id')}>
-        <label>
-          Title:
-          <input type="text" name="title" />
-        </label>
-        <label>
-          Artist:
-          <input type="text" name="artist" />
-        </label>
-        {/* Add other fields as needed */}
-        <button type="submit">Update Song</button>
-      </form>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <h2>Created Songs</h2>
+          <ul>
+            {createdSongs.map((song) => (
+              <li key={song.id}>
+                {song.title}
+                <button onClick={() => handleUpdateSong(song.id)}>Edit</button>
+                <button onClick={() => handleDeleteSong(song.id)}>
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+          <h2>Add Song</h2>
+          <form onSubmit={handleAddSong}>
+            <label>
+              Title:
+              <input type="text" name="title" />
+            </label>
+            <label>
+              URL:
+              <input type="text" name="url" />
+            </label>
+            <button type="submit">Add Song</button>
+          </form>
+        </>
+      )}
     </div>
   );
 };
 
 export default ArtistPage;
-

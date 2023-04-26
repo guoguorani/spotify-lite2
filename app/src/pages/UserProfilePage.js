@@ -1,14 +1,19 @@
 // ./page/ProfilePage.js
 
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import {
   updateProfile,
   fetchFollowedArtists,
   fetchLikedSongs,
-} from '../redux/user/userActionCreators';
-import { getUser, getLikedSongs, getFollowedArtists } from '../redux/user/userSelectors';
+} from "../redux/user/userActionCreators";
+import {
+  getUser,
+  getLikedSongs,
+  getFollowedArtists,
+} from "../redux/user/userSelectors";
+import "./styles.css";
 
 const UserProfilePage = () => {
   const dispatch = useDispatch();
@@ -18,7 +23,7 @@ const UserProfilePage = () => {
   const followedArtists = useSelector(getFollowedArtists);
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
 
   console.log(user, id);
@@ -29,10 +34,10 @@ const UserProfilePage = () => {
       await dispatch(fetchLikedSongs(id));
       setLoading(false);
     };
-  
+
     fetchData();
   }, [dispatch, id]);
-  
+
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
@@ -55,7 +60,7 @@ const UserProfilePage = () => {
   };
 
   return (
-    <div>
+    <div className="userprofile_container">
       {loading ? (
         <h2>Loading...</h2>
       ) : (
@@ -67,16 +72,14 @@ const UserProfilePage = () => {
               <div key={song.id}>
                 <h3>{song.title}</h3>
               </div>
-            ))
-          }
+            ))}
           <h2>Your Followed Artists:</h2>
           {followedArtists &&
             followedArtists.map((artist) => (
               <div key={artist.id}>
                 <h3>{artist.name}</h3>
               </div>
-            ))
-          }
+            ))}
           <h2>Update Profile:</h2>
           <label>Name: </label>
           <input type="text" value={name} onChange={handleNameChange} />
@@ -85,7 +88,11 @@ const UserProfilePage = () => {
           <input type="email" value={email} onChange={handleEmailChange} />
           <br />
           <label>Password: </label>
-          <input type="password" value={password} onChange={handlePasswordChange} />
+          <input
+            type="password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
           <br />
           <button onClick={handleUpdateUser}>Update Profile</button>
         </>

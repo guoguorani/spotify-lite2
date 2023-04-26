@@ -29,13 +29,14 @@ function getSongsByArtistRoute(req, res) {
 // they cannot like songs, follow other artists, or view/edit their own profile.
 function uploadSong(req, res) {
     const { title, url } = req.body;
-    const artistId = req.user.id;
-    const song = addSong(title, url, artistId);
+    // const artistId = req.user.id;
+    const song = addSong(title, url);
     if (!song) {
         return res.status(400).json({ message: 'Unable to add song' });
     }
     res.status(201).json({ song });
 };
+
 
 function editSong(req, res) {
     const { id } = req.params;

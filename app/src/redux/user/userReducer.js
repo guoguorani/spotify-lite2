@@ -122,6 +122,6 @@ import {
     }
   };
   
-  export {userReducer};
+  export default userReducer;
   
 //   export { loginUser, signupUser, updateProfile as updateUserProfile, likeSong, followArtist, userReducer };

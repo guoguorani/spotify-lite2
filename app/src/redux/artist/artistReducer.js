@@ -1,19 +1,22 @@
 // ./redux/artist/artistReducer.js
 
 import {
-  UPDATE_SONG_REQUEST,
-  UPDATE_SONG_SUCCESS,
-  UPDATE_SONG_FAILURE,
-  ADD_SONG_REQUEST,
-  ADD_SONG_SUCCESS,
-  ADD_SONG_FAILURE,
   FETCH_FOLLOWING_REQUEST,
   FETCH_FOLLOWING_SUCCESS,
   FETCH_FOLLOWING_FAILURE,
   FETCH_CREATED_SONGS_REQUEST,
   FETCH_CREATED_SONGS_SUCCESS,
   FETCH_CREATED_SONGS_FAILURE,
-} from './artistActionTypes';
+  ADD_SONG_REQUEST,
+  ADD_SONG_SUCCESS,
+  ADD_SONG_FAILURE,
+  EDIT_SONG_REQUEST,
+  EDIT_SONG_SUCCESS,
+  EDIT_SONG_FAILURE,
+  DELETE_SONG_REQUEST,
+  DELETE_SONG_SUCCESS,
+  DELETE_SONG_FAILURE,
+} from "./artistActionTypes";
 
 const initialState = {
   following: [],
@@ -41,13 +44,17 @@ const artistReducer = (state = initialState, action) => {
     case ADD_SONG_REQUEST:
       return { ...state, loading: true };
     case ADD_SONG_SUCCESS:
-      return { ...state, loading: false, createdSongs: [...state.createdSongs, action.payload] };
+      return {
+        ...state,
+        loading: false,
+        createdSongs: [...state.createdSongs, action.payload],
+      };
     case ADD_SONG_FAILURE:
       return { ...state, loading: false, error: action.payload };
 
-    case UPDATE_SONG_REQUEST:
+    case EDIT_SONG_REQUEST:
       return { ...state, loading: true };
-    case UPDATE_SONG_SUCCESS:
+    case EDIT_SONG_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -55,7 +62,21 @@ const artistReducer = (state = initialState, action) => {
           song.id === action.payload.id ? action.payload : song
         ),
       };
-    case UPDATE_SONG_FAILURE:
+    case EDIT_SONG_FAILURE:
+      return { ...state, loading: false, error: action.payload };
+
+    case DELETE_SONG_REQUEST:
+      return { ...state, loading: true };
+    case DELETE_SONG_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        createdSongs: state.createdSongs.filter(
+          (song) => song.id !== action.payload
+        ),
+        error: "",
+      };
+    case DELETE_SONG_FAILURE:
       return { ...state, loading: false, error: action.payload };
 
     default:

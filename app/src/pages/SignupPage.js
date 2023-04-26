@@ -1,27 +1,30 @@
 // ./pages/SignupPage.js
 
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { signupUser } from '../redux/user/userActionCreators';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { signupUser } from "../redux/user/userActionCreators";
+import "./styles.css";
 
 const SignupPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isArtist, setIsArtist] = useState(false);
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(signupUser({ name, email, password, isArtist }, () => {
-      navigate('/login');
-    }));
+    dispatch(
+      signupUser({ name, email, password, isArtist }, () => {
+        navigate("/login");
+      })
+    );
   };
 
   return (
-    <div>
+    <div className="signup_container">
       <h1>Signup</h1>
       <form onSubmit={handleSubmit}>
         <div>
@@ -30,7 +33,7 @@ const SignupPage = () => {
             type="text"
             id="name"
             value={name}
-            onChange={event => setName(event.target.value)}
+            onChange={(event) => setName(event.target.value)}
           />
         </div>
         <div>
@@ -39,7 +42,7 @@ const SignupPage = () => {
             type="email"
             id="email"
             value={email}
-            onChange={event => setEmail(event.target.value)}
+            onChange={(event) => setEmail(event.target.value)}
           />
         </div>
         <div>
@@ -48,7 +51,7 @@ const SignupPage = () => {
             type="password"
             id="password"
             value={password}
-            onChange={event => setPassword(event.target.value)}
+            onChange={(event) => setPassword(event.target.value)}
           />
         </div>
         <div>
