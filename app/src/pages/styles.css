@@ -54,3 +54,7 @@ button {
 .songs_cell {
   margin: 10px;
 }
+
+.clicked {
+    background-color: darkgrey;
+  }
